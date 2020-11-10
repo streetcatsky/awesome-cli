@@ -8,14 +8,14 @@ const major = semver[0];
 if (+major < 10) {
   console.error(
     'You are running Node ' +
-      currentNodeVersion +
-      '.\n' +
-      'Use sugoi cli requires Node 10 or higher. \n' +
-      'Please update your version of Node.'
+    currentNodeVersion +
+    '.\n' +
+    'Use sugoi cli requires Node 10 or higher. \n' +
+    'Please update your version of Node.'
   );
   process.exit(1);
 }
 
- import('./createSugoiTemplate').then(res=>{
-  res.init()
+import('./createSugoiTemplate').then(res => {
+  new res.default()
 }) 

@@ -12,99 +12,121 @@ import path from 'path'
 import semver from 'semver'
 import spawn from 'cross-spawn'
 import tmp from 'tmp'
-
+import * as inquirer from 'inquirer';
 import url from 'url'
 import validateProjectName from 'validate-npm-package-name'
-
+import figlet from 'figlet'
 import packageJson from '../package.json';
-import templateList from './templateList';
+import questions from './utils/question';
 
 let projectName: string;
 
-class CreateSugoiTemplate {
 
-  private projectName!:string;
 
-  constructor(){
+export default class CreateSugoiTemplate {
 
-   
+  private projectName!: string;
+
+  constructor() {
+
+    this.showWelcomeMessage()
+    this.askUesr()
+
   }
 
-  async init(){
-    
+  showWelcomeMessage() {
+
+    console.log(figlet.textSync('Sugoi CLI!', {
+      font: 'Ghost',
+      horizontalLayout: 'default',
+      verticalLayout: 'default',
+    }));
+
+    console.log()
+
+    console.log(
+      `  ${chalk.cyan('version')} ${chalk.green(packageJson.version)}`
+    );
+    console.log()
+  }
+  async askUesr() {
+
+    const answers = await inquirer.prompt(questions)
+
+    console.log(answers)
   }
 }
-async function init() {
+// async function init() {
 
-  const program = new commander.Command(packageJson.name)
-    .version(packageJson.version)
-    .arguments('<project-directory>')
-    .usage(`${chalk.green('<project-directory>')} [options]`)
-    .action(name => {
-      projectName = name;
-    })
-    .on('--help', () => {
-      console.log(
-        `    I can't help you .😅`
-      );
-    })
-    .parse(process.argv);
+//   const program = new commander.Command(packageJson.name)
+//     .version(packageJson.version)
+//     .arguments('<project-directory>')
+//     .usage(`${chalk.green('<project-directory>')} [options]`)
+//     .action(name => {
+//       projectName = name;
+//     })
+//     .on('--help', () => {
+//       console.log(
+//         `    I can't help you .😅`
+//       );
+//     })
+//     .parse(process.argv);
 
-    
-  if (typeof projectName === 'undefined') {
-    console.error('Please specify the project directory:');
-    console.log(
-      `  ${chalk.cyan(program.name())} ${chalk.green('<project-directory>')}`
-    );
-    console.log();
-    console.log('For example:');
-    console.log(
-      `  ${chalk.cyan(program.name())} ${chalk.green('my-sugoi-app')}`
-    );
-    console.log();
-    console.log(
-      `Run ${chalk.cyan(`${program.name()} --help`)} to see all options.`
-    );
-    process.exit(1);
-  }
 
-  
-  try {
+//   if (typeof projectName === 'undefined') {
+//     console.error('Please specify the project directory:');
+//     console.log(
+//       `  ${chalk.cyan(program.name())} ${chalk.green('<project-directory>')}`
+//     );
+//     console.log();
+//     console.log('For example:');
+//     console.log(
+//       `  ${chalk.cyan(program.name())} ${chalk.green('my-sugoi-app')}`
+//     );
+//     console.log();
+//     console.log(
+//       `Run ${chalk.cyan(`${program.name()} --help`)} to see all options.`
+//     );
+//     process.exit(1);
+//   }
 
-    const latest = await checkForLatestVersion();
 
-    if (latest && semver.lt(packageJson.version, latest)) {
-      console.log();
-      console.error(
-        chalk.yellow(
-          `You are running \`sugoi-cli\` ${packageJson.version}, which is behind the latest release (${latest}).\n\n` +
-          'We no longer support global installation of sugoi-cli.'
-        )
-      );
-      console.log();
-      console.log(
-        'Please remove any global installs with one of the following commands:\n' +
-        '- npm uninstall -g sugoi-cli\n' +
-        '- yarn global remove sugoi-cli'
-      );
-      console.log();
-      process.exit(1);
-    } else {
+//   try {
 
-      console.log('ready to createApp')
-      // createApp(
-      //   projectName,
-    
-      // );
-    }
-  } catch (error) {
-    process.exit(1);
-  }
+//     const latest = await checkForLatestVersion();
 
-}
+//     if (latest && semver.lt(packageJson.version, latest)) {
+//       console.log();
+//       console.error(
+//         chalk.yellow(
+//           `You are running \`sugoi-cli\` ${packageJson.version}, which is behind the latest release (${latest}).\n\n` +
+//           'We no longer support global installation of sugoi-cli.'
+//         )
+//       );
+//       console.log();
+//       console.log(
+//         'Please remove any global installs with one of the following commands:\n' +
+//         '- npm uninstall -g sugoi-cli\n' +
+//         '- yarn global remove sugoi-cli'
+//       );
+//       console.log();
+//       process.exit(1);
+//     } else {
+
+//       console.log('ready to createApp')
+// createApp(
+//   projectName,
+
+// );
+//     }
+//   } catch (error) {
+//     process.exit(1);
+//   }
+
+// }
 
 // function createApp(projectName:string) {
- 
+
 
 //   const root = path.resolve(projectName);
 
@@ -113,36 +135,36 @@ async function init() {
 //   checkAppName(projectName);
 //   fs.ensureDirSync(projectName);
 
-  // console.log(`Creating a new sugoi template in ${chalk.green(root)}.`);
-  // console.log();
+// console.log(`Creating a new sugoi template in ${chalk.green(root)}.`);
+// console.log();
 
-  // const packageJson = {
-  //   name: appName,
-  //   version: '0.1.0',
-  //   private: true,
-  // };
-  // fs.writeFileSync(
-  //   path.join(root, 'package.json'),
-  //   JSON.stringify(packageJson, null, 2) + os.EOL
-  // );
+// const packageJson = {
+//   name: appName,
+//   version: '0.1.0',
+//   private: true,
+// };
+// fs.writeFileSync(
+//   path.join(root, 'package.json'),
+//   JSON.stringify(packageJson, null, 2) + os.EOL
+// );
 
-  // const originalDirectory = process.cwd();
-  // process.chdir(root);
-  // if (!checkThatNpmCanReadCwd()) {
-  //   process.exit(1);
-  // }
+// const originalDirectory = process.cwd();
+// process.chdir(root);
+// if (!checkThatNpmCanReadCwd()) {
+//   process.exit(1);
+// }
 
-  //   const npmInfo = checkNpmVersion();
-  //   if (!npmInfo.hasMinNpm) {
-  //     if (npmInfo.npmVersion) {
-  //       console.log(
-  //         chalk.yellow(
-  //           `You are using npm ${npmInfo.npmVersion} so the project will be bootstrapped with an old unsupported version of tools.\n\n` +
-  //             `Please update to npm 6 or higher for a better, fully supported experience.\n`
-  //         )
-  //       );
-  //     }
-  //   }
+//   const npmInfo = checkNpmVersion();
+//   if (!npmInfo.hasMinNpm) {
+//     if (npmInfo.npmVersion) {
+//       console.log(
+//         chalk.yellow(
+//           `You are using npm ${npmInfo.npmVersion} so the project will be bootstrapped with an old unsupported version of tools.\n\n` +
+//             `Please update to npm 6 or higher for a better, fully supported experience.\n`
+//         )
+//       );
+//     }
+//   }
 
 //   run(
 //     root,
@@ -153,7 +175,7 @@ async function init() {
 //     template,
 //     usePnp
 //   );
- }
+//}
 
 // function install(root, useYarn, usePnp, dependencies, verbose, isOnline) {
 //   return new Promise((resolve, reject) => {
@@ -580,7 +602,7 @@ async function init() {
 //   }
 // }
 
-function checkAppName(appName:string) {
+function checkAppName(appName: string) {
   const validationResult = validateProjectName(appName);
   if (!validationResult.validForNewPackages) {
     console.error(
@@ -726,6 +748,6 @@ async function checkForLatestVersion() {
 }
 
 
-export {
-  init,
-};
+// export {
+//   init,
+// };
