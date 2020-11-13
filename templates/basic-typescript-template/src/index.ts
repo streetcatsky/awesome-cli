@@ -1,3 +1,3 @@
 import debugLog from './config/debugLog'
 
-debugLog('Hello World')
+debugLog.info('Hello World')

@@ -19,18 +19,16 @@ export default class CreateSugoiTemplate {
   private projectPath!: string;
   private templatePath !: string;
   constructor() {
-
     this.run()
-
   }
 
   async run() {
 
-    console.log('process.cwd(): ', process.cwd())
-    console.log('__dirname: ', __dirname)
-    console.log('path.resolve(): ', path.resolve())
-    console.log('templates path: ', __dirname.replace(path.basename(__dirname), 'templates'))
-    console.log('current template path: ', path.join(__dirname.replace(path.basename(__dirname), 'templates'), 'basic-typescript-template'))
+    // console.log('process.cwd(): ', process.cwd())
+    // console.log('__dirname: ', __dirname)
+    // console.log('path.resolve(): ', path.resolve())
+    // console.log('templates path: ', __dirname.replace(path.basename(__dirname), 'templates'))
+    // console.log('current template path: ', path.join(__dirname.replace(path.basename(__dirname), 'templates'), 'basic-typescript-template'))
 
     this.showWelcomeMessage()
     await this.checkSugoiIsLastVersion()
@@ -38,8 +36,9 @@ export default class CreateSugoiTemplate {
     await this.createProjectFolder()
     await this.createProjectContents()
     await this.installLibrary()
+    await this.writeProjectName()
     this.successMessage()
-    process.exit(0)
+
   }
 
   showWelcomeMessage() {
@@ -53,7 +52,14 @@ export default class CreateSugoiTemplate {
     console.log()
 
     console.log(
-      `  ${chalk.cyan('version')} ${chalk.green(packageJson.version)}`
+      `  ${chalk.cyan('Version:')} ${chalk.green(packageJson.version)}`
+    );
+
+    console.log(
+      `  ${chalk.cyan('Author:')} ${chalk.green('street_cat')}`
+    );
+    console.log(
+      `  ${chalk.cyan('Email:')} ${chalk.green('streetcatsky@gmail.com')}`
     );
     console.log()
   }
@@ -68,6 +74,7 @@ export default class CreateSugoiTemplate {
       horizontalLayout: 'default',
       verticalLayout: 'default',
     })));
+    console.log()
   }
   async askUser() {
 
@@ -131,7 +138,7 @@ export default class CreateSugoiTemplate {
 
     const spinner = ora(`Creating a new sugoi template in ${chalk.green(this.projectPath)}.`)
     spinner.start()
-    fs.ensureDirSync(this.projectName);
+    await fs.ensureDir(this.projectName);
     spinner.succeed()
   }
 
@@ -147,6 +154,15 @@ export default class CreateSugoiTemplate {
     spinner.start()
     shell.cd(this.projectPath)
     shell.exec('npm i')
+    spinner.succeed()
+  }
+
+  async writeProjectName() {
+    const spinner = ora(`Writing project name to package.json.`)
+    spinner.start()
+    const result = await fs.readJSON(this.templatePath + '/package.json');
+    result.name = this.projectName;
+    await fs.writeJSON(this.projectPath + '/package.json', result)
     spinner.succeed()
   }
 }
