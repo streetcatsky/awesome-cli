@@ -1,10 +1,16 @@
 {
   "name": "sugoi-cli",
-  "version": "1.5.6",
-  "description": "sugoi-cli",
+  "version": "1.5.8",
+  "description": "Help you create someone sugoi template",
   "engines": {
     "node": ">=10"
   },
+  "keywords": [
+    "street_cat",
+    "template",
+    "typescript",
+    "cli"
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/streetcatsky/sugoi-cli.git",
@@ -17,7 +23,7 @@
   "homepage": "https://github.com/streetcatsky/sugoi-cli#readme",
   "scripts": {
     "start": "ts-node ./src/index.ts",
-    "build": "tsc && shx rm -rf dist/templates && shx cp -r templates dist"
+    "build": "tsc && shx rm -rf dist/templates && shx cp -r templates dist && shx rm -f dist/README.md && shx cp README.md dist"
   },
   "bin": {
     "sugoi-cli": "./src/index.js"
