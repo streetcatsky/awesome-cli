@@ -146,6 +146,7 @@ export default class CreateSugoiTemplate {
     const spinner = ora(`Creating project contents.`)
     spinner.start()
     shell.cp('-R', this.templatePath + '/*', this.projectPath)
+    shell.cp('-R', this.templatePath + '/.*', this.projectPath)
     spinner.succeed()
   }
 
