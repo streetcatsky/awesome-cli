@@ -60,7 +60,7 @@
   },
   "include": [
     "src/**/*",
-    "**/*.md"
+    "**/*.md",
   ],
   "exclude": [
     "node_modules",
